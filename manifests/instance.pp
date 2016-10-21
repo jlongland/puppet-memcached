@@ -110,7 +110,7 @@ define memcached::instance (
     } ~>
     Exec['systemctl-daemon-reload']
   } 
-  else if $init_script {
+  elsif $init_script {
     file { $init_script:
       owner   => 'root',
       group   => 'root',
