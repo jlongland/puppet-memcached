@@ -98,7 +98,18 @@ define memcached::instance (
     }
   }
 
-  if $init_script {
+  if $init_script && $::osfamily = 'RedHat' {
+    include ::systemd
+    file { $init_script:
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0755',
+      content => template($memcached::params::init_tmpl),
+      require => Package[$memcached::params::package_name],
+      notify  => $service_notify_real,
+    } ~>
+    Exec['systemctl-daemon-reload']
+  } else {
     file { $init_script:
       owner   => 'root',
       group   => 'root',
