@@ -98,7 +98,7 @@ define memcached::instance (
     }
   }
 
-  if $init_script {
+  if ($init_script) and ($::osfamily == "/RedHat|Suse/") {
     include ::systemd
     file { $init_script:
       owner   => 'root',
@@ -110,16 +110,16 @@ define memcached::instance (
     } ~>
     Exec['systemctl-daemon-reload']
   } 
-#  else if $init_script {
-#    file { $init_script:
-#      owner   => 'root',
-#      group   => 'root',
-#      mode    => '0755',
-#      content => template($memcached::params::init_tmpl),
-#      require => Package[$memcached::params::package_name],
-#      notify  => $service_notify_real,
-#    }
-#  }
+  else if $init_script {
+    file { $init_script:
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0755',
+      content => template($memcached::params::init_tmpl),
+      require => Package[$memcached::params::package_name],
+      notify  => $service_notify_real,
+    }
+  }
 
   ensure_resource('service', $service_name, {
       ensure     => $service_ensure,
