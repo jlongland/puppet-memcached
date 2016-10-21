@@ -98,7 +98,7 @@ define memcached::instance (
     }
   }
 
-  if $init_script and ($::osfamily == '/RedHat|Suse/') {
+  if $init_script and ($::osfamily == "/RedHat|Suse/"') {
     include ::systemd
     file { $init_script:
       owner   => 'root',
